@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Menu — The Fat Chef Zambia</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --gold: #d4a843; --gold-dim: rgba(212,168,67,0.18);
+      --cream: #faf6ee; --dark: #0d0c0a; --dark2: #141310; --dark3: #1c1a16;
+      --muted: rgba(250,246,238,0.5);
+      --display: 'Playfair Display', serif; --body: 'DM Sans', sans-serif;
+    }
+    body { background: var(--dark); color: var(--cream); font-family: var(--body); font-weight: 300; }
+
+    /* Navigation */
+    nav { padding: 18px 64px; background: var(--dark2); border-bottom: 1px solid var(--gold-dim); display: flex; justify-content: space-between; align-items: center; }
+    .logo { font-family: var(--display); font-size: 1.3rem; font-weight: 700; text-decoration: none; color: var(--cream); }
+    .logo em { color: var(--gold); font-style: italic; }
+    .back-home { color: var(--gold); text-decoration: none; font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; }
+
+    /* Header */
+    .menu-header { text-align: center; padding: 80px 24px 40px; }
+    .menu-header h1 { font-family: var(--display); font-size: 3.5rem; margin-bottom: 10px; }
+    .gold-line { width: 60px; height: 2px; background: var(--gold); margin: 20px auto; }
+
+    /* Menu Grid Layout */
+    .menu-container { max-width: 1200px; margin: 0 auto; padding: 40px 24px 100px; display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 60px; }
+    
+    .category-sec { margin-bottom: 40px; }
+    .category-title { font-family: var(--display); color: var(--gold); font-size: 1.8rem; border-bottom: 1px solid var(--gold-dim); padding-bottom: 10px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; }
+    .category-title span { font-size: 0.7rem; font-family: var(--body); letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); }
+
+    .menu-item { margin-bottom: 22px; }
+    .item-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 5px; }
+    .item-name { font-family: var(--display); font-size: 1.15rem; font-weight: 700; color: var(--cream); }
+    .item-dots { flex: 1; border-bottom: 1px dotted var(--gold-dim); margin: 0 10px; }
+    .item-price { font-family: var(--display); color: var(--gold); font-weight: 700; }
+    .item-desc { font-size: 0.82rem; color: var(--muted); line-height: 1.5; }
+    .veg-icon { color: #4caf50; font-size: 0.8rem; margin-left: 5px; }
+
+    footer { text-align: center; padding: 40px; border-top: 1px solid var(--gold-dim); font-size: 0.7rem; letter-spacing: 0.1em; color: var(--muted); }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="home.html" class="logo">The <em>Fat Chef</em></a>
+    <a href="home.html" class="back-home">← Back to Home</a>
+  </nav>
+
+  <header class="menu-header">
+    <h1>Our Menu</h1>
+    <div class="gold-line"></div>
+    <p style="color: var(--muted); font-size: 0.9rem;">Crafted with passion in the heart of Lusaka.</p>
+  </header>
+
+  <div class="menu-container">
+    
+    <section class="category-sec">
+      <h2 class="category-title">Starters <span>Small Plates</span></h2>
+      <div class="menu-item">
+        <div class="item-header">
+          <span class="item-name">Crispy Fried Calamari</span>
+          <div class="item-dots"></div>
+          <span class="item-price">K 130</span>
+        </div>
+        <p class="item-desc">Served with home-made tartar sauce and a lemon wedge.</p>
+      </div>
+      <div class="menu-item">
+        <div class="item-header">
+          <span class="item-name">Pan Fried Halloumi <span class="veg-icon">Ⓥ</span></span>
+          <div class="item-dots"></div>
+          <span class="item-price">K 120</span>
+        </div>
+        <p class="item-desc">Served with house-made ranch sauce, lemon, and black pepper.</p>
+      </div>
+      <div class="menu-item">
+        <div class="item-header">
+          <span class="item-name">Tempura Prawns</span>
+          <div class="item-dots"></div>
+          <span class="item-price">K 140</span>
+        </div>
+        <p class="item-desc">6 crumbed prawns with spicy mayo, teriyaki, and toasted sesame seeds.</p>
+      </div>
+    </section>
+
+    <section class="category-sec">
+      <h2 class="category-title">Sushi <span>Japanese Fusion</span></h2>
+      <div class="menu-item">
+        <div class="item-header">
+          <span class="item-name">Volcano Special (4pcs)</span>
+          <div class="item-dots"></div>
+          <span class="item-price">K 190</span>
+        </div>
+        <p class="item-desc">Salmon inside out roll topped with tempura prawns, mayo, and teriyaki.</p>
+      </div>
+      <div class="menu-item">
+        <div class="item-header">
+          <span class="item-name">Salmon Roses (3pcs)</span>
+          <div class="item-dots"></div>
+          <span class="item-price">K 160</span>
+        </div>
+        <p class="item-desc">Thinly sliced salmon wrapped around rice with avocado and caviar.</p>
+      </div>
+      <div class="menu-item">
+        <div class="item-header">
+          <span class="item-name">Seafood Platter</span>
+          <div class="item-dots"></div>
+          <span class="item-price">K 350</span>
+        </div>
+        <p class="item-desc">2 Salmon Roses, 2 Salmon Nigiri, 4 Tuna Inside-Out, 4 Salmon Fashion Sandwich.</p>
+      </div>
+    </section>
+
+    <section class="category-sec">
+      <h2 class="category-title">Wood-Fired Pizza <span>Authentic</span></h2>
+      <div class="menu-item">
+        <div class="item-header">
+          <span class="item-name">Chicken & Mushroom</span>
+          <div class="item-dots"></div>
+          <span class="item-price">K 240</span>
+        </div>
+        <p class="item-desc">Spiced BBQ chicken and mushrooms on a red base mozzarella.</p>
+      </div>
+      <div class="menu-item">
+        <div class="item-header">
+          <span class="item-name">Trio Cheese <span class="veg-icon">Ⓥ</span></span>
+          <div class="item-dots"></div>
+          <span class="item-price">K 205</span>
+        </div>
+        <p class="item-desc">White base margherita with mozzarella, cheddar, and feta topped with rosemary.</p>
+      </div>
+      <div class="menu-item">
+        <div class="item-header">
+          <span class="item-name">Fat Chef Meaty</span>
+          <div class="item-dots"></div>
+          <span class="item-price">K 255</span>
+        </div>
+        <p class="item-desc">Red margherita base with BBQ shredded chicken, chorizo, and pepperoni.</p>
+      </div>
+    </section>
+
+    <section class="category-sec">
+      <h2 class="category-title">Mains <span>From the Grill</span></h2>
+      <div class="menu-item">
+        <div class="item-header">
+          <span class="item-name">T-Bone 500g</span>
+          <div class="item-dots"></div>
+          <span class="item-price">K 290</span>
+        </div>
+        <p class="item-desc">Succulent T-bone grilled to your liking and basted in special house sauce.</p>
+      </div>
+      <div class="menu-item">
+        <div class="item-header">
+          <span class="item-name">Biltong Dusted Fillet</span>
+          <div class="item-dots"></div>
+          <span class="item-price">K 275</span>
+        </div>
+        <p class="item-desc">300g grilled beef fillet coated in local biltong dust.</p>
+      </div>
+      <div class="menu-item">
+        <div class="item-header">
+          <span class="item-name">Chicken Parmesana</span>
+          <div class="item-dots"></div>
+          <span class="item-price">K 200</span>
+        </div>
+        <p class="item-desc">Crumbed chicken breast topped with red sauce and melted mozzarella.</p>
+      </div>
+    </section>
+
+    <section class="category-sec">
+      <h2 class="category-title">Soft Shell Tacos <span>3 Per Serving</span></h2>
+      <div class="menu-item">
+        <div class="item-header">
+          <span class="item-name">Korean BBQ Beef</span>
+          <div class="item-dots"></div>
+          <span class="item-price">K 125</span>
+        </div>
+        <p class="item-desc">Sweet spicy beef, lettuce, pico de gallo, and pineapple with spicy mayo.</p>
+      </div>
+      <div class="menu-item">
+        <div class="item-header">
+          <span class="item-name">Crumbed Halloumi <span class="veg-icon">Ⓥ</span></span>
+          <div class="item-dots"></div>
+          <span class="item-price">K 125</span>
+        </div>
+        <p class="item-desc">Panko crumbed halloumi with pico de gallo, lettuce, and ranch.</p>
+      </div>
+    </section>
+
+    <section class="category-sec">
+      <h2 class="category-title">Desserts <span>Sweet Ending</span></h2>
+      <div class="menu-item">
+        <div class="item-header">
+          <span class="item-name">Tiramisu</span>
+          <div class="item-dots"></div>
+          <span class="item-price">K 160</span>
+        </div>
+        <p class="item-desc">Classic Italian coffee-flavoured cake.</p>
+      </div>
+      <div class="menu-item">
+        <div class="item-header">
+          <span class="item-name">Cannoli</span>
+          <div class="item-dots"></div>
+          <span class="item-price">K 130</span>
+        </div>
+        <p class="item-desc">Traditional pastry shells filled with a sweet, creamy filling.</p>
+      </div>
+    </section>
+
+  </div>
+
+  <footer>
+    <p>© 2024–2025 The Fat Chef Zambia · EastPark Mall, Lusaka</p>
+  </footer>
+
+</body>
+</html>

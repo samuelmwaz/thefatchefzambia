@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Fat Chef — EastPark Mall, Lusaka</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --gold: #d4a843; --gold-dim: rgba(212,168,67,0.18);
+      --cream: #faf6ee; --dark: #0d0c0a; --dark2: #141310; --dark3: #1c1a16;
+      --muted: rgba(250,246,238,0.5);
+      --display: 'Playfair Display', serif; --body: 'DM Sans', sans-serif;
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--dark); color: var(--cream); font-family: var(--body); font-weight: 300; overflow-x: hidden; }
+
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; align-items: center; justify-content: space-between; padding: 18px 64px; background: linear-gradient(to bottom, rgba(13,12,10,0.97), transparent); transition: background 0.4s; }
+    nav.scrolled { background: rgba(13,12,10,0.97); border-bottom: 1px solid var(--gold-dim); }
+    .logo { font-family: var(--display); font-size: 1.55rem; font-weight: 700; }
+    .logo em { color: var(--gold); font-style: italic; }
+    .nav-links { list-style: none; display: flex; align-items: center; gap: 38px; }
+    .nav-links a { color: var(--cream); text-decoration: none; font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.75; transition: opacity 0.25s, color 0.25s; }
+    .nav-links a:hover { opacity: 1; color: var(--gold); }
+    .nav-book { background: var(--gold); color: var(--dark); border: none; padding: 10px 26px; font-family: var(--body); font-size: 0.72rem; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; cursor: pointer; transition: background 0.25s, transform 0.2s; }
+    .nav-book:hover { background: #e8c060; transform: translateY(-1px); }
+
+    .hero { height: 100vh; min-height: 680px; display: flex; align-items: center; justify-content: center; text-align: center; position: relative; overflow: hidden; }
+    .hero-bg { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(13,12,10,0.3) 0%, rgba(13,12,10,0.15) 40%, rgba(13,12,10,0.82) 100%), url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1800&q=85') center/cover no-repeat; animation: kbz 22s ease-in-out infinite alternate; }
+    @keyframes kbz { from { transform: scale(1.0); } to { transform: scale(1.08); } }
+    .hero-inner { position: relative; z-index: 2; max-width: 780px; padding: 0 24px; }
+    .hero-tag { display: inline-block; font-family: var(--display); font-style: italic; font-size: 1.05rem; color: var(--gold); margin-bottom: 16px; opacity: 0; animation: up 0.9s 0.3s forwards; }
+    .hero h1 { font-family: var(--display); font-size: clamp(3rem, 8vw, 6.8rem); font-weight: 700; line-height: 1.05; margin-bottom: 22px; opacity: 0; animation: up 0.9s 0.55s forwards; }
+    .hero h1 em { color: var(--gold); font-style: italic; }
+    .hero p { font-size: 0.95rem; line-height: 2; color: var(--muted); max-width: 480px; margin: 0 auto 40px; opacity: 0; animation: up 0.9s 0.8s forwards; }
+    .hero-btns { display: flex; gap: 16px; justify-content: center; opacity: 0; animation: up 0.9s 1s forwards; }
+    .btn-gold { background: var(--gold); color: var(--dark); padding: 14px 40px; border: none; font-family: var(--body); font-size: 0.75rem; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; cursor: pointer; text-decoration: none; display: inline-block; transition: background 0.25s, transform 0.2s; }
+    .btn-gold:hover { background: #e8c060; transform: translateY(-2px); }
+    .btn-outline { border: 1px solid rgba(250,246,238,0.3); color: var(--cream); padding: 14px 40px; font-family: var(--body); font-size: 0.75rem; letter-spacing: 0.2em; text-transform: uppercase; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: border-color 0.25s, color 0.25s; }
+    .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+    .scroll-cue { position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 8px; color: var(--muted); font-size: 0.62rem; letter-spacing: 0.25em; text-transform: uppercase; opacity: 0; animation: up 1s 1.3s forwards; }
+    .scroll-line { width: 1px; height: 50px; background: linear-gradient(to bottom, var(--gold), transparent); animation: pulse 2s ease-in-out infinite; }
+    @keyframes pulse { 0%,100%{opacity:0.4} 50%{opacity:1} }
+    @keyframes up { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+
+    .ribbon { background: var(--gold); color: var(--dark); padding: 14px 0; overflow: hidden; white-space: nowrap; }
+    .ribbon-track { display: inline-flex; animation: scroll-x 18s linear infinite; }
+    .ribbon-track span { font-size: 0.7rem; letter-spacing: 0.28em; text-transform: uppercase; font-weight: 500; padding: 0 36px; }
+    .ribbon-track span::before { content: '✦'; margin-right: 36px; }
+    @keyframes scroll-x { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+    .hours-bar { background: var(--dark2); padding: 50px 64px; border-bottom: 1px solid var(--gold-dim); }
+    .hours-title { font-family: var(--display); font-style: italic; font-size: 1rem; color: var(--gold); margin-bottom: 28px; text-align: center; }
+    .hours-grid { display: grid; grid-template-columns: repeat(7, 1fr); max-width: 1000px; margin: 0 auto; }
+    .hours-day { text-align: center; padding: 0 8px; border-right: 1px solid var(--gold-dim); }
+    .hours-day:last-child { border-right: none; }
+    .day-name { font-size: 0.6rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); margin-bottom: 8px; }
+    .day-time { font-family: var(--display); font-size: 0.85rem; line-height: 1.6; color: var(--muted); }
+    .hours-note { text-align: center; margin-top: 22px; font-size: 0.73rem; color: var(--muted); }
+    .hours-note em { color: var(--gold); font-style: normal; }
+
+    .section-pad { padding: 110px 64px; }
+    .eyebrow { font-family: var(--display); font-style: italic; font-size: 1rem; color: var(--gold); display: block; margin-bottom: 12px; }
+    .sec-title { font-family: var(--display); font-size: clamp(2.4rem, 4.5vw, 4rem); font-weight: 700; line-height: 1.08; margin-bottom: 20px; }
+    .sec-body { font-size: 0.88rem; line-height: 1.95; color: var(--muted); max-width: 440px; }
+    .gold-bar { width: 48px; height: 2px; background: var(--gold); margin: 24px 0; }
+
+    .menu-section { background: var(--dark2); }
+    .menu-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 60px; flex-wrap: wrap; gap: 20px; }
+    .menu-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3px; }
+    .dish-card { position: relative; height: 440px; overflow: hidden; cursor: pointer; }
+    .dish-card img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.55); transition: transform 0.7s ease, filter 0.5s; }
+    .dish-card:hover img { transform: scale(1.08); filter: brightness(0.38); }
+    .dish-card-body { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: flex-end; padding: 30px 28px; }
+    .dish-tag { font-size: 0.6rem; letter-spacing: 0.28em; text-transform: uppercase; color: var(--gold); margin-bottom: 8px; }
+    .dish-name { font-family: var(--display); font-size: 1.7rem; font-weight: 700; line-height: 1.15; }
+    .dish-desc { font-size: 0.8rem; color: rgba(250,246,238,0.72); line-height: 1.8; margin-top: 10px; max-height: 0; overflow: hidden; opacity: 0; transition: max-height 0.5s, opacity 0.4s; }
+    .dish-card:hover .dish-desc { max-height: 80px; opacity: 1; }
+    .dish-price { font-family: var(--display); font-size: 1rem; color: var(--gold); margin-top: 8px; opacity: 0; transition: opacity 0.4s 0.1s; }
+    .dish-card:hover .dish-price { opacity: 1; }
+
+    .ambiance-section { display: grid; grid-template-columns: 1fr 1fr; min-height: 600px; }
+    .amb-img { position: relative; overflow: hidden; }
+    .amb-img img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.65); transition: transform 0.8s; }
+    .amb-img:hover img { transform: scale(1.04); }
+    .amb-content { background: var(--dark3); padding: 90px 72px; display: flex; flex-direction: column; justify-content: center; border-left: 1px solid var(--gold-dim); }
+    .feature-list { list-style: none; margin-top: 36px; }
+    .feature-list li { border-bottom: 1px solid var(--gold-dim); padding: 18px 0; display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; color: var(--muted); transition: color 0.3s; }
+    .feature-list li:hover { color: var(--cream); }
+
+    .cta-section { position: relative; text-align: center; padding: 130px 64px; overflow: hidden; }
+    .cta-bg { position: absolute; inset: 0; background: linear-gradient(to bottom, var(--dark) 0%, rgba(13,12,10,0.5) 35%, rgba(13,12,10,0.5) 65%, var(--dark) 100%), url('https://images.unsplash.com/photo-1550966871-3ed3cfd6e0ba?w=1600&q=80') center/cover no-repeat; }
+    .cta-inner { position: relative; z-index: 2; max-width: 680px; margin: 0 auto; }
+    .cta-details { display: flex; justify-content: center; gap: 64px; margin: 48px 0; flex-wrap: wrap; }
+    .cta-detail .label { font-size: 0.62rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: 6px; }
+    .cta-detail .value { font-family: var(--display); font-size: 1.1rem; }
+
+    footer { background: var(--dark); border-top: 1px solid var(--gold-dim); padding: 28px 64px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+    footer .logo { font-size: 1.1rem; }
+    footer p { font-size: 0.68rem; letter-spacing: 0.1em; color: var(--muted); }
+    .foot-links { display: flex; gap: 24px; }
+    .foot-links a { color: var(--muted); text-decoration: none; font-size: 0.68rem; letter-spacing: 0.1em; transition: color 0.25s; }
+    .foot-links a:hover { color: var(--gold); }
+  </style>
+</head>
+<body>
+
+  <nav id="navbar">
+    <div class="logo">The <em>Fat Chef</em></div>
+    <ul class="nav-links">
+      <li><a href="#menu">Menu</a></li>
+            <li><a href="specials.html">special</a></li>
+
+      <li><a href="#ambiance">About</a></li>
+      <li><a href="#contact">Contact</a></li>
+      <li><button class="nav-book" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Explore</button></li>
+    </ul>
+  </nav>
+
+  <header class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-inner">
+      <span class="hero-tag">EastPark Mall, Lusaka</span>
+      <h1>Where Every<br>Dish Tells a <em>Story</em></h1>
+      <p>Pizza, pasta, sushi, tacos & grilled meats — a world of flavour under one glorious roof.</p>
+      <div class="hero-btns">
+        <a href="#menu" class="btn-gold">Explore Menu</a>
+        <a href="#contact" class="btn-outline">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          Reserve a Table
+        </a>
+      </div>
+    </div>
+    <div class="scroll-cue"><div class="scroll-line"></div>Scroll</div>
+  </header>
+
+  <div class="ribbon">
+    <div class="ribbon-track">
+      <span>Pizza</span><span>Sushi</span><span>Pasta</span><span>Grilled Meats</span><span>Tacos</span><span>Cocktails</span><span>Desserts</span><span>Fine Dining</span>
+      <span>Pizza</span><span>Sushi</span><span>Pasta</span><span>Grilled Meats</span><span>Tacos</span><span>Cocktails</span><span>Desserts</span><span>Fine Dining</span>
+    </div>
+  </div>
+
+  <div class="hours-bar">
+    <p class="hours-title">Working Hours</p>
+    <div class="hours-grid">
+      <div class="hours-day"><div class="day-name">Monday</div><div class="day-time">10:00<br>22:00</div></div>
+      <div class="hours-day"><div class="day-name">Tuesday</div><div class="day-time">10:00<br>22:00</div></div>
+      <div class="hours-day"><div class="day-name">Wednesday</div><div class="day-time">10:00<br>22:00</div></div>
+      <div class="hours-day"><div class="day-name">Thursday</div><div class="day-time">10:00<br>22:00</div></div>
+      <div class="hours-day"><div class="day-name">Friday</div><div class="day-time">10:00<br>23:00</div></div>
+      <div class="hours-day"><div class="day-name">Saturday</div><div class="day-time">10:00<br>23:00</div></div>
+      <div class="hours-day"><div class="day-name">Sunday</div><div class="day-time">11:00<br>22:00</div></div>
+    </div>
+    <p class="hours-note">Reservations recommended on weekends · Call <em>+260 97 7904975</em></p>
+  </div>
+
+  <section class="menu-section section-pad" id="menu">
+    <div class="menu-header">
+      <div>
+        <span class="eyebrow">Taste the mood</span>
+        <h2 class="sec-title">Our Menu</h2>
+        <div class="gold-bar"></div>
+      </div>
+      <p class="sec-body">From crispy wood-fired pizzas to delicate sushi rolls and flame-kissed steaks — every plate is crafted with obsession.</p>
+    </div>
+    <div class="menu-grid" id="menu-grid">
+      <div class="dish-card">
+        <img src="images/Screenshot 2026-04-10 095649.png" alt="Pizza">
+        <div class="dish-card-body">
+          <span class="dish-tag">01 — Baked</span>
+          <h3 class="dish-name">Wood-Fired<br>Pizza</h3>
+          <p class="dish-desc">Thin-crust classics topped with fresh mozzarella and house-made tomato sauce.</p>
+          <span class="dish-price">From K 185</span>
+        </div>
+      </div>
+      <div class="dish-card">
+        <img src="images/Screenshot 2026-04-10 095811.png" alt="Sushi">
+        <div class="dish-card-body">
+          <span class="dish-tag">02 — Japanese</span>
+          <h3 class="dish-name">Premium<br>Sushi</h3>
+          <p class="dish-desc">Delicate rolls and nigiri with a Zambian twist — fresh, bold, beautifully presented.</p>
+          <span class="dish-price">From K 220</span>
+        </div>
+      </div>
+      <div class="dish-card">
+        <img src="https://images.unsplash.com/photo-1544025162-d76694265947?w=800&q=80" alt="Grilled Meats">
+        <div class="dish-card-body">
+          <span class="dish-tag">03 — Grill</span>
+          <h3 class="dish-name">Grilled<br>Meats</h3>
+          <p class="dish-desc">Juicy steaks and succulent ribs seared over open flame with bold marinades.</p>
+          <span class="dish-price">From K 310</span>
+        </div>
+      </div>
+      <div class="dish-card">
+        <img src="images/Screenshot 2026-04-10 095811.png" alt="Cocktails">
+        <div class="dish-card-body">
+          <span class="dish-tag">04 — Bar</span>
+          <h3 class="dish-name">Craft<br>Cocktails</h3>
+          <p class="dish-desc">House-infused spirits and fresh citrus shaken into unforgettable blends.</p>
+          <span class="dish-price">From K 95</span>
+        </div>
+      </div>
+    </div>
+    <div id="dynamic-dishes" style="display:contents;"></div>
+  </section>
+
+  <div class="ambiance-section" id="ambiance">
+    <div class="amb-img">
+      <img src="images/Screenshot 2026-04-10 095841.png" alt="Restaurant ambiance">
+    </div>
+    <div class="amb-content">
+      <span class="eyebrow">The experience</span>
+      <h2 class="sec-title">More than<br>a Meal</h2>
+      <div class="gold-bar"></div>
+      <p class="sec-body">The Fat Chef is EastPark Mall's centrepiece dining destination — vibrant, welcoming, and alive with flavour from morning until last orders.</p>
+      <ul class="feature-list">
+        <li>Multi-cuisine under one roof <span>🍕</span></li>
+        <li>Live cooking stations <span>🔥</span></li>
+        <li>Private dining available <span>🥂</span></li>
+        <li>Family & corporate packages <span>👨‍👩‍👧</span></li>
+        <li>Catering & events <span>🎉</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <section class="cta-section" id="contact">
+    <div class="cta-bg"></div>
+    <div class="cta-inner">
+      <span class="eyebrow">Come dine with us</span>
+      <h2 class="sec-title">We look forward<br>to having you</h2>
+      <div class="gold-bar" style="margin:24px auto;"></div>
+      <div class="cta-details">
+        <div class="cta-detail"><span class="label">Location</span><span class="value">EastPark Mall, Lusaka</span></div>
+        <div class="cta-detail"><span class="label">Phone</span><span class="value">+260 97 7904975</span></div>
+        <div class="cta-detail"><span class="label">Hours</span><span class="value">Mon–Thu 10:00–22:00</span></div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="logo">The <em>Fat Chef</em></div>
+    <p>© 2024–2025 The Fat Chef Zambia · EastPark Mall, Lusaka</p>
+    <div class="foot-links">
+      <a href="#menu">Menu</a>
+      <a href="#contact">Contact</a>
+      <a href="admin.html">Admin ↗</a>
+    </div>
+  </footer>
+
+  <script>
+    window.addEventListener('scroll', () => {
+      document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 60);
+    });
+
+    function loadDynamicDishes() {
+      const dishes = JSON.parse(localStorage.getItem('fatChefDishes') || '[]');
+      const container = document.getElementById('dynamic-dishes');
+      const grid = document.getElementById('menu-grid');
+      // Remove old dynamic cards
+      grid.querySelectorAll('.dynamic-card').forEach(el => el.remove());
+      const fallback = 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80';
+      dishes.forEach((d, i) => {
+        const card = document.createElement('div');
+        card.className = 'dish-card dynamic-card';
+        card.innerHTML = `
+          <img src="${d.image || fallback}" alt="${d.name}" onerror="this.src='${fallback}'">
+          <div class="dish-card-body">
+            <span class="dish-tag">${String(5+i).padStart(2,'0')} — ${d.category || 'Chef Special'}</span>
+            <h3 class="dish-name">${d.name}</h3>
+            <p class="dish-desc">${d.description}</p>
+            <span class="dish-price">${d.price ? 'K '+d.price : ''}</span>
+          </div>`;
+        grid.appendChild(card);
+      });
+    }
+    loadDynamicDishes();
+    window.addEventListener('storage', loadDynamicDishes);
+  </script>
+</body>
+</html>

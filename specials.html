@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Specials & Offers — The Fat Chef</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --gold: #d4a843; --gold-dim: rgba(212,168,67,0.15); --gold-bright: #e8c060;
+      --red: #e74c3c; --red-dim: rgba(231,76,60,0.12);
+      --green: #27ae60; --green-dim: rgba(39,174,96,0.1);
+      --blue: #2980b9; --blue-dim: rgba(41,128,185,0.1);
+      --cream: #faf6ee; --dark: #0d0c0a; --dark2: #141310; --dark3: #1c1a16;
+      --muted: rgba(250,246,238,0.5);
+      --display: 'Playfair Display', serif; --body: 'DM Sans', sans-serif;
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--dark); color: var(--cream); font-family: var(--body); font-weight: 300; overflow-x: hidden; }
+
+    /* ── NAVBAR ── */
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; align-items: center; justify-content: space-between; padding: 18px 64px; background: linear-gradient(to bottom, rgba(13,12,10,0.97), transparent); transition: background 0.4s; }
+    nav.scrolled { background: rgba(13,12,10,0.97); border-bottom: 1px solid var(--gold-dim); }
+    .logo { font-family: var(--display); font-size: 1.5rem; font-weight: 700; text-decoration: none; color: var(--cream); }
+    .logo em { color: var(--gold); font-style: italic; }
+    .nav-links { list-style: none; display: flex; align-items: center; gap: 36px; }
+    .nav-links a { color: var(--cream); text-decoration: none; font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.72; transition: opacity 0.25s, color 0.25s; }
+    .nav-links a:hover, .nav-links a.active { opacity: 1; color: var(--gold); }
+    .btn-nav { background: var(--gold); color: var(--dark); border: none; padding: 10px 24px; font-family: var(--body); font-size: 0.7rem; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; cursor: pointer; transition: background 0.25s; text-decoration: none; }
+    .btn-nav:hover { background: var(--gold-bright); }
+
+    /* ── HERO ── */
+    .hero { height: 62vh; min-height: 480px; display: flex; align-items: center; justify-content: center; text-align: center; position: relative; overflow: hidden; }
+    .hero-bg { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(13,12,10,0.45) 0%, rgba(13,12,10,0.25) 40%, rgba(13,12,10,0.88) 100%), url('https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1800&q=85') center/cover no-repeat; animation: kbz 20s ease-in-out infinite alternate; }
+    @keyframes kbz { from{transform:scale(1)} to{transform:scale(1.07)} }
+    .hero-inner { position: relative; z-index: 2; }
+    .hero-eyebrow { font-family: var(--display); font-style: italic; font-size: 1.05rem; color: var(--gold); display: block; margin-bottom: 14px; opacity: 0; animation: up 0.9s 0.3s forwards; }
+    .hero h1 { font-family: var(--display); font-size: clamp(3rem, 7vw, 6rem); font-weight: 700; line-height: 1.05; opacity: 0; animation: up 0.9s 0.55s forwards; }
+    .hero h1 em { color: var(--gold); font-style: italic; }
+    .hero-sub { font-size: 0.9rem; color: var(--muted); margin-top: 18px; letter-spacing: 0.06em; line-height: 1.9; opacity: 0; animation: up 0.9s 0.8s forwards; }
+    @keyframes up { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:translateY(0)} }
+
+    /* ── RIBBON ── */
+    .ribbon { background: var(--gold); color: var(--dark); padding: 12px 0; overflow: hidden; white-space: nowrap; }
+    .ribbon-track { display: inline-flex; animation: rx 16s linear infinite; }
+    .ribbon-track span { font-size: 0.68rem; letter-spacing: 0.26em; text-transform: uppercase; font-weight: 500; padding: 0 32px; }
+    .ribbon-track span::before { content: '✦'; margin-right: 32px; }
+    @keyframes rx { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+    /* ── FILTER BAR ── */
+    .filter-bar { background: var(--dark2); border-bottom: 1px solid var(--gold-dim); padding: 22px 64px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .filter-label { font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted); margin-right: 6px; }
+    .fp { padding: 8px 20px; font-size: 0.68rem; letter-spacing: 0.15em; text-transform: uppercase; border: 1px solid var(--gold-dim); color: var(--muted); cursor: pointer; transition: all 0.22s; background: transparent; font-family: var(--body); }
+    .fp:hover, .fp.active { border-color: var(--gold); color: var(--gold); background: var(--gold-dim); }
+
+    /* ── MAIN GRID ── */
+    .specials-section { padding: 70px 64px 100px; }
+    .section-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 48px; flex-wrap: wrap; gap: 16px; }
+    .sh-left .eyebrow { font-family: var(--display); font-style: italic; font-size: 1rem; color: var(--gold); display: block; margin-bottom: 10px; }
+    .sh-left h2 { font-family: var(--display); font-size: clamp(2rem, 3.5vw, 3.2rem); font-weight: 700; }
+    .results-count { font-size: 0.72rem; color: var(--muted); letter-spacing: 0.08em; }
+    .gold-bar { width: 44px; height: 2px; background: var(--gold); margin: 16px 0; }
+
+    .specials-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 22px; }
+
+    /* Card */
+    .sp-card { background: var(--dark2); border: 1px solid var(--gold-dim); overflow: hidden; position: relative; cursor: default; transition: transform 0.35s, box-shadow 0.35s; animation: cardIn 0.6s both; }
+    .sp-card:hover { transform: translateY(-5px); box-shadow: 0 16px 50px rgba(0,0,0,0.55); }
+    @keyframes cardIn { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+    .sp-img { position: relative; height: 240px; overflow: hidden; background: var(--dark3); }
+    .sp-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.7s; filter: brightness(0.88); }
+    .sp-card:hover .sp-img img { transform: scale(1.07); filter: brightness(0.78); }
+    .sp-img-ph { display: flex; align-items: center; justify-content: center; height: 100%; flex-direction: column; gap: 8px; }
+    .sp-img-ph span { font-size: 3.5rem; }
+    .sp-img-ph p { font-size: 0.72rem; color: var(--muted); }
+    .sp-badge { position: absolute; top: 14px; left: 14px; padding: 5px 14px; font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 500; }
+    .sp-badge.gold { background: rgba(212,168,67,0.92); color: var(--dark); }
+    .sp-badge.red { background: rgba(231,76,60,0.92); color: #fff; }
+    .sp-badge.green { background: rgba(39,174,96,0.92); color: #fff; }
+    .sp-badge.blue { background: rgba(41,128,185,0.92); color: #fff; }
+    .sp-expires-ribbon { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(13,12,10,0.82); padding: 7px 14px; font-size: 0.65rem; color: var(--gold); display: flex; align-items: center; gap: 6px; }
+    .sp-body { padding: 22px 20px; }
+    .sp-type { font-size: 0.6rem; letter-spacing: 0.24em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+    .sp-name { font-family: var(--display); font-size: 1.45rem; font-weight: 700; line-height: 1.2; margin-bottom: 10px; }
+    .sp-desc { font-size: 0.8rem; color: var(--muted); line-height: 1.8; margin-bottom: 16px; }
+    .sp-price-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .sp-price { font-family: var(--display); font-size: 1.5rem; color: var(--gold); }
+    .sp-old { font-size: 0.88rem; color: var(--muted); text-decoration: line-through; }
+    .sp-pct { background: var(--red-dim); border: 1px solid rgba(231,76,60,0.25); color: var(--red); padding: 3px 10px; font-size: 0.62rem; letter-spacing: 0.12em; font-weight: 500; }
+
+    /* Featured (first card) */
+    .sp-card.featured { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; }
+    .sp-card.featured .sp-img { height: 100%; min-height: 340px; }
+    .sp-card.featured .sp-name { font-size: 2rem; }
+    .sp-card.featured .sp-desc { font-size: 0.85rem; }
+    .sp-card.featured .sp-body { padding: 40px 36px; display: flex; flex-direction: column; justify-content: center; }
+
+    /* Empty state */
+    .empty { text-align: center; padding: 100px 24px; color: var(--muted); grid-column: 1/-1; }
+    .empty .ei { font-size: 4rem; margin-bottom: 18px; }
+    .empty h3 { font-family: var(--display); font-size: 1.6rem; margin-bottom: 10px; }
+    .empty p { font-size: 0.85rem; line-height: 1.8; }
+
+    /* ── CTA BAR ── */
+    .cta-bar { background: var(--dark2); border-top: 1px solid var(--gold-dim); border-bottom: 1px solid var(--gold-dim); padding: 60px 64px; text-align: center; }
+    .cta-bar h2 { font-family: var(--display); font-size: clamp(1.8rem, 3vw, 2.8rem); margin-bottom: 16px; }
+    .cta-bar h2 em { color: var(--gold); font-style: italic; }
+    .cta-bar p { font-size: 0.85rem; color: var(--muted); margin-bottom: 30px; }
+    .btn-gold { background: var(--gold); color: var(--dark); border: none; padding: 14px 40px; font-family: var(--body); font-size: 0.75rem; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; cursor: pointer; transition: background 0.25s, transform 0.2s; text-decoration: none; display: inline-block; }
+    .btn-gold:hover { background: var(--gold-bright); transform: translateY(-2px); }
+
+    /* ── FOOTER ── */
+    footer { background: var(--dark); border-top: 1px solid var(--gold-dim); padding: 26px 64px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+    footer .logo { font-size: 1.1rem; }
+    footer p { font-size: 0.68rem; color: var(--muted); }
+    .foot-links { display: flex; gap: 22px; }
+    .foot-links a { color: var(--muted); text-decoration: none; font-size: 0.68rem; letter-spacing: 0.1em; transition: color 0.25s; }
+    .foot-links a:hover { color: var(--gold); }
+  </style>
+</head>
+<body>
+
+  <nav id="navbar">
+    <a href="home.html" class="logo">The <em>Fat Chef</em></a>
+    <ul class="nav-links">
+      <li><a href="home.html#menu">Menu</a></li>
+      <li><a href="specials.html" class="active">Specials</a></li>
+      <li><a href="home.html#contact">Contact</a></li>
+      <li><a href="home.html#contact" class="btn-nav">Book a Table</a></li>
+    </ul>
+  </nav>
+
+  <header class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-inner">
+      <span class="hero-eyebrow">Limited time offers</span>
+      <h1>Today's <em>Specials</em><br>& Offers</h1>
+      <p class="hero-sub">Chef's picks, new dishes, discounts & events — updated daily.</p>
+    </div>
+  </header>
+
+  <div class="ribbon">
+    <div class="ribbon-track">
+      <span>Chef's Special</span><span>Discounts</span><span>New Dishes</span><span>Drink Specials</span><span>Combo Deals</span><span>Events</span>
+      <span>Chef's Special</span><span>Discounts</span><span>New Dishes</span><span>Drink Specials</span><span>Combo Deals</span><span>Events</span>
+    </div>
+  </div>
+
+  <div class="filter-bar">
+    <span class="filter-label">Filter:</span>
+    <button class="fp active" data-f="all" onclick="filterBy('all',this)">All</button>
+    <button class="fp" data-f="special" onclick="filterBy('special',this)">⭐ Chef's Specials</button>
+    <button class="fp" data-f="discount" onclick="filterBy('discount',this)">🏷️ Discounts</button>
+    <button class="fp" data-f="new" onclick="filterBy('new',this)">🆕 New Dishes</button>
+    <button class="fp" data-f="drink" onclick="filterBy('drink',this)">🍹 Drinks</button>
+    <button class="fp" data-f="event" onclick="filterBy('event',this)">🎉 Events</button>
+    <button class="fp" data-f="combo" onclick="filterBy('combo',this)">🤝 Combos</button>
+  </div>
+
+  <section class="specials-section">
+    <div class="section-header">
+      <div class="sh-left">
+        <span class="eyebrow">What's on today</span>
+        <h2 id="section-heading">All Specials</h2>
+        <div class="gold-bar"></div>
+      </div>
+      <span class="results-count" id="results-count"></span>
+    </div>
+    <div class="specials-grid" id="specials-grid"></div>
+  </section>
+
+  <div class="cta-bar">
+    <h2>Ready to dine with <em>us?</em></h2>
+    <p>Call us to reserve your table or walk in — we'd love to have you.</p>
+    <a href="tel:+260977904975" class="btn-gold">📞 &nbsp;+260 97 7904975</a>
+  </div>
+
+  <footer>
+    <a href="home.html" class="logo">The <em>Fat Chef</em></a>
+    <p>© 2024–2025 The Fat Chef · EastPark Mall, Lusaka</p>
+    <div class="foot-links">
+      <a href="home.html#menu">Menu</a>
+      <a href="home.html#contact">Contact</a>
+      <a href="admin-specials.html">Admin ↗</a>
+    </div>
+  </footer>
+
+  <script>
+    let currentFilter = 'all';
+
+    window.addEventListener('scroll', () => {
+      document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
+    });
+
+    function getSpecials() {
+      return (JSON.parse(localStorage.getItem('fatChefSpecials') || '[]')).filter(s => !s.draft);
+    }
+
+    const typeIcons = { special:'⭐', discount:'🏷️', new:'🆕', drink:'🍹', event:'🎉', combo:'🤝' };
+    const typeLabels = { special:"Chef's Special", discount:'Discount Offer', new:'New Dish', drink:'Drink Special', event:'Event', combo:'Combo Deal' };
+    const headings = { all:'All Specials', special:"Chef's Specials", discount:'Discount Offers', new:'New Dishes', drink:'Drink Specials', event:'Events', combo:'Combo Deals' };
+
+    function filterBy(f, el) {
+      currentFilter = f;
+      document.querySelectorAll('.fp').forEach(p => p.classList.remove('active'));
+      el.classList.add('active');
+      document.getElementById('section-heading').textContent = headings[f] || 'All Specials';
+      render();
+    }
+
+    function isExpiringSoon(dateStr) {
+      if (!dateStr) return false;
+      const exp = new Date(dateStr);
+      const diff = (exp - new Date()) / (1000 * 60 * 60 * 24);
+      return diff >= 0 && diff <= 2;
+    }
+
+    function isExpired(dateStr) {
+      if (!dateStr) return false;
+      return new Date(dateStr) < new Date();
+    }
+
+    function render() {
+      const grid = document.getElementById('specials-grid');
+      let list = getSpecials();
+      if (currentFilter !== 'all') list = list.filter(s => s.type === currentFilter);
+      // Remove expired
+      list = list.filter(s => !isExpired(s.expires));
+
+      document.getElementById('results-count').textContent = `${list.length} item${list.length !== 1 ? 's' : ''} available`;
+
+      if (!list.length) {
+        grid.innerHTML = `<div class="empty"><div class="ei">✨</div><h3>Nothing here yet</h3><p>Check back soon — our chefs are cooking up<br>something special just for you.</p></div>`;
+        return;
+      }
+
+      const fallback = 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=70';
+
+      grid.innerHTML = list.map((s, i) => {
+        const pct = s.oldprice && s.price ? Math.round((1 - Number(s.price)/Number(s.oldprice))*100) : 0;
+        const featured = i === 0 && currentFilter === 'all';
+        const expiresEl = s.expires ? `
+          <div class="sp-expires-ribbon">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            Valid until ${new Date(s.expires).toLocaleDateString('en-GB',{day:'numeric',month:'long'})}
+            ${isExpiringSoon(s.expires) ? ' · <strong style="color:#e74c3c;"> Ending soon!</strong>' : ''}
+          </div>` : '';
+
+        return `
+        <div class="sp-card${featured?' featured':''}">
+          <div class="sp-img">
+            ${s.image ? `<img src="${s.image}" onerror="this.parentElement.innerHTML='<div class=\\'sp-img-ph\\'><span>${typeIcons[s.type]||'🍽️'}</span></div>'" alt="${s.name}">` : `<div class="sp-img-ph"><span>${typeIcons[s.type]||'🍽️'}</span></div>`}
+            <div class="sp-badge ${s.badge||'gold'}">${typeLabels[s.type]||'Special'}</div>
+            ${expiresEl}
+          </div>
+          <div class="sp-body">
+            <div class="sp-type">${typeIcons[s.type]||''} ${typeLabels[s.type]||''} ${s.category ? '· '+s.category : ''}</div>
+            <div class="sp-name">${s.name}</div>
+            <div class="sp-desc">${s.desc}</div>
+            <div class="sp-price-row">
+              ${s.price ? `<span class="sp-price">K ${s.price}</span>` : ''}
+              ${s.oldprice ? `<span class="sp-old">K ${s.oldprice}</span>` : ''}
+              ${pct > 0 ? `<span class="sp-pct">${pct}% OFF</span>` : ''}
+            </div>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    render();
+    window.addEventListener('storage', render);
+  </script>
+</body>
+</html>

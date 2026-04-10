@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fat Chef — Post a Special</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --gold: #d4a843; --gold-dim: rgba(212,168,67,0.15); --gold-bright: #e8c060;
+      --red: #e74c3c; --red-dim: rgba(231,76,60,0.15);
+      --green: #27ae60; --green-dim: rgba(39,174,96,0.12);
+      --blue: #2980b9; --blue-dim: rgba(41,128,185,0.12);
+      --cream: #faf6ee; --dark: #0d0c0a; --dark2: #141310; --dark3: #1c1a16; --dark4: #242118;
+      --muted: rgba(250,246,238,0.48);
+      --display: 'Playfair Display', serif; --body: 'DM Sans', sans-serif;
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--dark); color: var(--cream); font-family: var(--body); font-weight: 300; min-height: 100vh; display: flex; }
+
+    /* ───── SIDEBAR ───── */
+    .sidebar { width: 250px; min-height: 100vh; background: var(--dark2); border-right: 1px solid var(--gold-dim); display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; overflow-y: auto; flex-shrink: 0; }
+    .sidebar-brand { padding: 30px 24px 22px; border-bottom: 1px solid var(--gold-dim); }
+    .brand-name { font-family: var(--display); font-size: 1.25rem; font-weight: 700; }
+    .brand-name em { color: var(--gold); font-style: italic; }
+    .brand-sub { font-size: 0.6rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted); margin-top: 4px; }
+    .sidebar-nav { padding: 20px 0; flex: 1; }
+    .nav-group-label { font-size: 0.56rem; letter-spacing: 0.28em; text-transform: uppercase; color: var(--muted); padding: 0 24px 8px; margin-top: 8px; }
+    .nav-item { display: flex; align-items: center; gap: 11px; padding: 12px 24px; font-size: 0.8rem; color: var(--muted); cursor: pointer; border-left: 2px solid transparent; transition: all 0.2s; text-decoration: none; }
+    .nav-item:hover { background: var(--dark3); color: var(--cream); }
+    .nav-item.active { background: var(--gold-dim); color: var(--gold); border-left-color: var(--gold); }
+    .nav-item svg { flex-shrink: 0; }
+    .sidebar-footer { padding: 18px 24px; border-top: 1px solid var(--gold-dim); display: flex; flex-direction: column; gap: 10px; }
+    .foot-link { display: flex; align-items: center; gap: 8px; color: var(--muted); text-decoration: none; font-size: 0.72rem; letter-spacing: 0.08em; transition: color 0.2s; }
+    .foot-link:hover { color: var(--gold); }
+
+    /* ───── MAIN ───── */
+    .main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+    .topbar { background: var(--dark2); border-bottom: 1px solid var(--gold-dim); padding: 16px 40px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+    .topbar-title { font-family: var(--display); font-size: 1.3rem; }
+    .topbar-title em { color: var(--gold); font-style: italic; }
+    .topbar-badge { background: var(--gold-dim); border: 1px solid rgba(212,168,67,0.3); color: var(--gold); padding: 5px 14px; font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase; }
+    .content { flex: 1; padding: 36px 40px; overflow-y: auto; }
+
+    /* ───── PANELS ───── */
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    /* ───── TYPE SELECTOR ───── */
+    .type-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 36px; }
+    .type-card { border: 1px solid var(--gold-dim); padding: 26px 20px; text-align: center; cursor: pointer; transition: all 0.25s; position: relative; }
+    .type-card:hover { border-color: var(--gold); background: var(--gold-dim); }
+    .type-card.selected { border-color: var(--gold); background: var(--gold-dim); }
+    .type-card.selected::after { content: '✓'; position: absolute; top: 10px; right: 14px; font-size: 0.75rem; color: var(--gold); }
+    .type-icon { font-size: 2.2rem; margin-bottom: 10px; }
+    .type-name { font-family: var(--display); font-size: 1rem; font-weight: 600; margin-bottom: 4px; }
+    .type-desc { font-size: 0.72rem; color: var(--muted); line-height: 1.6; }
+    .type-card[data-type="special"] { border-color: rgba(212,168,67,0.3); }
+    .type-card[data-type="discount"] { border-color: rgba(231,76,60,0.3); }
+    .type-card[data-type="new"] { border-color: rgba(39,174,96,0.3); }
+    .type-card[data-type="drink"] { border-color: rgba(41,128,185,0.3); }
+    .type-card[data-type="event"] { border-color: rgba(155,89,182,0.3); }
+    .type-card[data-type="combo"] { border-color: rgba(230,126,34,0.3); }
+
+    /* ───── FORM ───── */
+    .form-wrap { display: grid; grid-template-columns: 1fr 420px; gap: 24px; align-items: start; }
+    .form-card { background: var(--dark2); border: 1px solid var(--gold-dim); padding: 32px; }
+    .form-card-title { font-family: var(--display); font-size: 1.4rem; margin-bottom: 6px; }
+    .form-card-title em { color: var(--gold); font-style: italic; }
+    .form-card-sub { font-size: 0.75rem; color: var(--muted); margin-bottom: 28px; }
+    .gold-line { width: 42px; height: 2px; background: var(--gold); margin-bottom: 28px; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    .fg { display: flex; flex-direction: column; gap: 7px; }
+    .fg.full { grid-column: 1 / -1; }
+    label { font-size: 0.63rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); }
+    input[type=text], input[type=number], input[type=url], input[type=date], select, textarea {
+      background: var(--dark3); border: 1px solid rgba(212,168,67,0.18);
+      color: var(--cream); padding: 11px 14px; font-family: var(--body); font-size: 0.83rem;
+      outline: none; width: 100%; transition: border-color 0.25s;
+    }
+    input:focus, select:focus, textarea:focus { border-color: var(--gold); }
+    textarea { resize: vertical; min-height: 88px; }
+    select option { background: var(--dark3); }
+
+    /* Badge colour selector */
+    .badge-row { display: flex; gap: 10px; flex-wrap: wrap; }
+    .badge-opt { padding: 6px 16px; font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; border: 1px solid transparent; transition: all 0.2s; }
+    .badge-opt.gold { background: var(--gold-dim); border-color: rgba(212,168,67,0.4); color: var(--gold); }
+    .badge-opt.red { background: var(--red-dim); border-color: rgba(231,76,60,0.4); color: var(--red); }
+    .badge-opt.green { background: var(--green-dim); border-color: rgba(39,174,96,0.4); color: var(--green); }
+    .badge-opt.blue { background: var(--blue-dim); border-color: rgba(41,128,185,0.4); color: var(--blue); }
+    .badge-opt.selected { outline: 2px solid currentColor; outline-offset: 2px; }
+
+    /* Image upload area */
+    .upload-area { border: 1.5px dashed rgba(212,168,67,0.3); padding: 28px; text-align: center; cursor: pointer; transition: border-color 0.25s; position: relative; }
+    .upload-area:hover, .upload-area.drag { border-color: var(--gold); background: var(--gold-dim); }
+    .upload-area input[type=file] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+    .upload-icon { font-size: 2rem; margin-bottom: 10px; }
+    .upload-text { font-size: 0.8rem; color: var(--muted); }
+    .upload-text strong { color: var(--gold); }
+    .upload-or { font-size: 0.68rem; color: var(--muted); margin: 12px 0; letter-spacing: 0.1em; }
+
+    /* Preview card */
+    .preview-card { background: var(--dark2); border: 1px solid var(--gold-dim); overflow: hidden; position: sticky; top: 20px; }
+    .preview-label { font-size: 0.6rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted); padding: 14px 18px; border-bottom: 1px solid var(--gold-dim); }
+    .preview-img-wrap { position: relative; height: 220px; overflow: hidden; background: var(--dark3); }
+    .preview-img-wrap img { width: 100%; height: 100%; object-fit: cover; }
+    .preview-img-placeholder { display: flex; align-items: center; justify-content: center; height: 100%; color: var(--muted); font-size: 0.78rem; flex-direction: column; gap: 8px; }
+    .preview-img-placeholder span { font-size: 2.5rem; }
+    .preview-badge { position: absolute; top: 14px; left: 14px; padding: 4px 12px; font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 500; }
+    .preview-body { padding: 20px 18px; }
+    .preview-type { font-size: 0.6rem; letter-spacing: 0.22em; text-transform: uppercase; margin-bottom: 6px; }
+    .preview-title { font-family: var(--display); font-size: 1.5rem; font-weight: 700; line-height: 1.2; margin-bottom: 8px; }
+    .preview-desc { font-size: 0.78rem; color: var(--muted); line-height: 1.75; margin-bottom: 14px; }
+    .preview-price-row { display: flex; align-items: center; gap: 12px; }
+    .preview-price { font-family: var(--display); font-size: 1.3rem; color: var(--gold); }
+    .preview-old-price { font-size: 0.85rem; color: var(--muted); text-decoration: line-through; }
+    .preview-discount-tag { background: var(--red-dim); color: var(--red); border: 1px solid rgba(231,76,60,0.3); padding: 3px 10px; font-size: 0.62rem; letter-spacing: 0.12em; }
+    .preview-expires { font-size: 0.68rem; color: var(--muted); margin-top: 10px; display: flex; align-items: center; gap: 6px; }
+
+    /* Action buttons */
+    .form-actions { display: flex; gap: 12px; margin-top: 26px; flex-wrap: wrap; }
+    .btn-publish { background: var(--gold); color: var(--dark); border: none; padding: 13px 36px; font-family: var(--body); font-size: 0.73rem; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; cursor: pointer; transition: background 0.25s, transform 0.2s; }
+    .btn-publish:hover { background: var(--gold-bright); transform: translateY(-1px); }
+    .btn-draft { background: transparent; border: 1px solid rgba(250,246,238,0.2); color: var(--muted); padding: 13px 24px; font-family: var(--body); font-size: 0.73rem; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; }
+    .btn-draft:hover { border-color: var(--cream); color: var(--cream); }
+    .btn-clear { background: transparent; border: 1px solid rgba(231,76,60,0.25); color: rgba(231,76,60,0.7); padding: 13px 20px; font-family: var(--body); font-size: 0.73rem; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; }
+    .btn-clear:hover { border-color: var(--red); color: var(--red); }
+
+    /* ───── SPECIALS LIST ───── */
+    .specials-toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 14px; }
+    .filter-pills { display: flex; gap: 8px; flex-wrap: wrap; }
+    .filter-pill { padding: 6px 16px; font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; border: 1px solid var(--gold-dim); color: var(--muted); cursor: pointer; transition: all 0.2s; }
+    .filter-pill:hover, .filter-pill.active { border-color: var(--gold); color: var(--gold); background: var(--gold-dim); }
+    .specials-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 18px; }
+
+    .special-card { background: var(--dark2); border: 1px solid var(--gold-dim); overflow: hidden; position: relative; transition: transform 0.3s, box-shadow 0.3s; }
+    .special-card:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,0,0,0.5); }
+    .special-card-img { position: relative; height: 200px; overflow: hidden; background: var(--dark3); }
+    .special-card-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s; }
+    .special-card:hover .special-card-img img { transform: scale(1.06); }
+    .special-card-img-ph { display: flex; align-items: center; justify-content: center; height: 100%; font-size: 3rem; color: var(--muted); }
+    .s-badge { position: absolute; top: 12px; left: 12px; padding: 4px 12px; font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 500; }
+    .s-badge.gold { background: rgba(212,168,67,0.9); color: var(--dark); }
+    .s-badge.red { background: rgba(231,76,60,0.9); color: #fff; }
+    .s-badge.green { background: rgba(39,174,96,0.9); color: #fff; }
+    .s-badge.blue { background: rgba(41,128,185,0.9); color: #fff; }
+    .special-card-body { padding: 20px 18px; }
+    .sc-type { font-size: 0.58rem; letter-spacing: 0.24em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+    .sc-name { font-family: var(--display); font-size: 1.25rem; font-weight: 700; line-height: 1.2; margin-bottom: 8px; }
+    .sc-desc { font-size: 0.77rem; color: var(--muted); line-height: 1.75; margin-bottom: 14px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .sc-prices { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .sc-price { font-family: var(--display); font-size: 1.15rem; color: var(--gold); }
+    .sc-old { font-size: 0.8rem; color: var(--muted); text-decoration: line-through; }
+    .sc-discount { background: var(--red-dim); color: var(--red); border: 1px solid rgba(231,76,60,0.25); padding: 2px 8px; font-size: 0.6rem; letter-spacing: 0.12em; }
+    .sc-expires { font-size: 0.65rem; color: var(--muted); display: flex; align-items: center; gap: 5px; }
+    .sc-expires.expiring { color: var(--red); }
+    .sc-card-actions { display: flex; gap: 8px; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--gold-dim); }
+    .sc-btn { flex: 1; padding: 8px; font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; border: none; cursor: pointer; transition: all 0.2s; font-family: var(--body); }
+    .sc-btn.edit { background: var(--gold-dim); border: 1px solid rgba(212,168,67,0.3); color: var(--gold); }
+    .sc-btn.edit:hover { background: rgba(212,168,67,0.25); }
+    .sc-btn.del { background: var(--red-dim); border: 1px solid rgba(231,76,60,0.25); color: var(--red); }
+    .sc-btn.del:hover { background: rgba(231,76,60,0.22); }
+    .sc-btn.toggle { background: var(--dark3); border: 1px solid var(--gold-dim); color: var(--muted); }
+    .sc-btn.toggle:hover { color: var(--cream); border-color: rgba(250,246,238,0.3); }
+
+    .status-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 5px; }
+    .status-dot.live { background: var(--green); }
+    .status-dot.draft { background: var(--muted); }
+    .card-status { position: absolute; top: 12px; right: 12px; background: rgba(13,12,10,0.85); padding: 3px 10px; font-size: 0.6rem; letter-spacing: 0.14em; text-transform: uppercase; display: flex; align-items: center; }
+
+    .empty-state { text-align: center; padding: 80px 20px; color: var(--muted); }
+    .empty-state .ei { font-size: 4rem; margin-bottom: 16px; }
+    .empty-state p { font-size: 0.85rem; line-height: 1.8; }
+
+    /* ───── TOAST ───── */
+    .toast { position: fixed; bottom: 28px; right: 28px; background: var(--dark3); border-left: 3px solid var(--gold); border: 1px solid var(--gold-dim); border-left: 3px solid var(--gold); color: var(--cream); padding: 14px 22px; font-size: 0.8rem; transform: translateY(70px); opacity: 0; transition: all 0.35s; z-index: 999; }
+    .toast.show { transform: translateY(0); opacity: 1; }
+
+    /* ───── DELETE MODAL ───── */
+    .overlay { position: fixed; inset: 0; background: rgba(13,12,10,0.82); z-index: 500; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.25s; }
+    .overlay.open { opacity: 1; pointer-events: all; }
+    .modal { background: var(--dark2); border: 1px solid var(--gold-dim); padding: 38px; max-width: 480px; width: 92%; }
+    .modal h3 { font-family: var(--display); font-size: 1.4rem; margin-bottom: 10px; }
+    .modal p { color: var(--muted); font-size: 0.83rem; line-height: 1.8; margin-bottom: 28px; }
+    .modal-btns { display: flex; gap: 12px; }
+    .btn-danger { background: var(--red); color: #fff; border: none; padding: 12px 26px; font-family: var(--body); font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; cursor: pointer; }
+    .btn-cancel { background: transparent; border: 1px solid rgba(250,246,238,0.2); color: var(--muted); padding: 12px 20px; font-family: var(--body); font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; cursor: pointer; }
+  </style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-name">The <em>Fat Chef</em></div>
+    <div class="brand-sub">Specials Manager</div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-group-label">Specials</div>
+    <div class="nav-item active" onclick="showPanel('post', this)">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 5v14M5 12h14"/></svg>
+      Post a Special
+    </div>
+    <div class="nav-item" onclick="showPanel('manage', this)">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="1"/><path d="M3 9h18M9 21V9"/></svg>
+      Manage Specials
+    </div>
+    <div class="nav-group-label" style="margin-top:16px;">Navigation</div>
+    <a class="nav-item" href="admin.html">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+      Main Dashboard
+    </a>
+    <a class="nav-item" href="specials.html" target="_blank">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><path d="M15 3h6v6"/><path d="M10 14L21 3"/></svg>
+      View Specials Page
+    </a>
+  </nav>
+  <div class="sidebar-footer">
+    <a href="home.html" class="foot-link">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      Live Website
+    </a>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-title">Specials <em>Manager</em></div>
+    <div style="display:flex;gap:12px;align-items:center;">
+      <span id="live-count" style="font-size:0.72rem;color:var(--muted);"></span>
+      <span class="topbar-badge">Admin</span>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- POST PANEL -->
+    <div class="panel active" id="panel-post">
+      <div style="margin-bottom:28px;">
+        <p style="font-size:0.65rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;">Step 1 — Choose Type</p>
+        <div class="type-grid">
+          <div class="type-card" data-type="special" onclick="selectType(this)">
+            <div class="type-icon">⭐</div>
+            <div class="type-name">Chef's Special</div>
+            <div class="type-desc">Today's signature dish crafted by our head chef</div>
+          </div>
+          <div class="type-card" data-type="discount" onclick="selectType(this)">
+            <div class="type-icon">🏷️</div>
+            <div class="type-name">Discount Offer</div>
+            <div class="type-desc">Percentage or fixed price reduction on a dish</div>
+          </div>
+          <div class="type-card" data-type="new" onclick="selectType(this)">
+            <div class="type-icon">🆕</div>
+            <div class="type-name">New Dish</div>
+            <div class="type-desc">Freshly added to our menu — introduce it here</div>
+          </div>
+          <div class="type-card" data-type="drink" onclick="selectType(this)">
+            <div class="type-icon">🍹</div>
+            <div class="type-name">Drink Special</div>
+            <div class="type-desc">Cocktail of the week or happy hour offer</div>
+          </div>
+          <div class="type-card" data-type="event" onclick="selectType(this)">
+            <div class="type-icon">🎉</div>
+            <div class="type-name">Event / Night</div>
+            <div class="type-desc">Themed evening, live music, or special occasion</div>
+          </div>
+          <div class="type-card" data-type="combo" onclick="selectType(this)">
+            <div class="type-icon">🤝</div>
+            <div class="type-name">Combo Deal</div>
+            <div class="type-desc">Bundle offer — meal + drink or multi-item deal</div>
+          </div>
+        </div>
+      </div>
+
+      <p style="font-size:0.65rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold);margin-bottom:20px;">Step 2 — Fill Details</p>
+      <div class="form-wrap">
+
+        <!-- FORM -->
+        <div class="form-card">
+          <div class="form-card-title">Post a <em>Special</em></div>
+          <div class="form-card-sub">This will appear live on the Specials page immediately after publishing.</div>
+          <div class="gold-line"></div>
+          <div class="form-grid">
+            <div class="fg">
+              <label>Title / Dish Name *</label>
+              <input type="text" id="s-name" placeholder="e.g. Truffle Mushroom Risotto" oninput="updatePreview()">
+            </div>
+            <div class="fg">
+              <label>Category / Tag</label>
+              <select id="s-category" onchange="updatePreview()">
+                <option value="">— Pick category —</option>
+                <option>Pizza</option><option>Sushi</option><option>Pasta</option>
+                <option>Grilled Meats</option><option>Tacos</option><option>Cocktails</option>
+                <option>Mocktails</option><option>Desserts</option><option>Starters</option>
+                <option>Salads</option><option>Chef Special</option><option>Combo</option><option>Event</option>
+              </select>
+            </div>
+            <div class="fg">
+              <label>Price (K)</label>
+              <input type="number" id="s-price" placeholder="e.g. 250" oninput="updatePreview()">
+            </div>
+            <div class="fg">
+              <label>Original Price (K) <span style="color:var(--muted);font-size:0.58rem;">(for discounts)</span></label>
+              <input type="number" id="s-oldprice" placeholder="e.g. 350" oninput="updatePreview()">
+            </div>
+            <div class="fg">
+              <label>Valid Until</label>
+              <input type="date" id="s-expires" onchange="updatePreview()">
+            </div>
+            <div class="fg">
+              <label>Badge Colour</label>
+              <div class="badge-row">
+                <span class="badge-opt gold selected" data-badge="gold" onclick="selectBadge(this)">Gold</span>
+                <span class="badge-opt red" data-badge="red" onclick="selectBadge(this)">Hot</span>
+                <span class="badge-opt green" data-badge="green" onclick="selectBadge(this)">New</span>
+                <span class="badge-opt blue" data-badge="blue" onclick="selectBadge(this)">Special</span>
+              </div>
+            </div>
+            <div class="fg full">
+              <label>Description *</label>
+              <textarea id="s-desc" placeholder="Describe the dish, ingredients, offer details, or event info…" oninput="updatePreview()"></textarea>
+            </div>
+            <div class="fg full">
+              <label>Dish / Offer Image</label>
+              <div class="upload-area" id="upload-area">
+                <input type="file" accept="image/*" onchange="handleFileUpload(this)" id="file-input">
+                <div class="upload-icon">📷</div>
+                <div class="upload-text"><strong>Click to upload</strong> or drag & drop</div>
+                <div class="upload-text" style="margin-top:4px;font-size:0.68rem;">JPG, PNG, WEBP — max 5MB</div>
+              </div>
+              <div class="upload-or">— or paste image URL —</div>
+              <input type="url" id="s-image" placeholder="https://images.unsplash.com/…" oninput="updatePreview()">
+            </div>
+          </div>
+          <div class="form-actions">
+            <button class="btn-publish" onclick="publishSpecial(false)">🚀 Publish Now</button>
+            <button class="btn-draft" onclick="publishSpecial(true)">Save as Draft</button>
+            <button class="btn-clear" onclick="clearForm()">✕ Clear</button>
+          </div>
+        </div>
+
+        <!-- LIVE PREVIEW -->
+        <div class="preview-card" id="preview-card">
+          <div class="preview-label">Live Preview</div>
+          <div class="preview-img-wrap">
+            <img id="prev-img" src="" alt="" style="display:none;">
+            <div class="preview-img-placeholder" id="prev-img-ph"><span>🍽️</span>Image preview</div>
+            <div class="preview-badge s-badge gold" id="prev-badge">Special</div>
+            <div class="card-status"><span class="status-dot live"></span>Live</div>
+          </div>
+          <div class="preview-body">
+            <div class="preview-type" id="prev-type">Chef's Special</div>
+            <div class="preview-title" id="prev-title">Dish name will appear here</div>
+            <div class="preview-desc" id="prev-desc">Your description will appear here…</div>
+            <div class="preview-price-row">
+              <span class="preview-price" id="prev-price"></span>
+              <span class="preview-old-price" id="prev-oldprice" style="display:none;"></span>
+              <span class="preview-discount-tag" id="prev-discount" style="display:none;"></span>
+            </div>
+            <div class="preview-expires" id="prev-expires" style="display:none;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+              <span id="prev-expires-text"></span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- MANAGE PANEL -->
+    <div class="panel" id="panel-manage">
+      <div class="specials-toolbar">
+        <div>
+          <h3 style="font-family:var(--display);font-size:1.5rem;margin-bottom:4px;">All <em style="color:var(--gold);font-style:italic;">Specials</em></h3>
+          <p id="manage-count" style="font-size:0.72rem;color:var(--muted);"></p>
+        </div>
+        <div class="filter-pills">
+          <span class="filter-pill active" data-f="all" onclick="filterSpecials('all',this)">All</span>
+          <span class="filter-pill" data-f="special" onclick="filterSpecials('special',this)">⭐ Chef's</span>
+          <span class="filter-pill" data-f="discount" onclick="filterSpecials('discount',this)">🏷️ Discount</span>
+          <span class="filter-pill" data-f="new" onclick="filterSpecials('new',this)">🆕 New</span>
+          <span class="filter-pill" data-f="drink" onclick="filterSpecials('drink',this)">🍹 Drinks</span>
+          <span class="filter-pill" data-f="event" onclick="filterSpecials('event',this)">🎉 Events</span>
+          <span class="filter-pill" data-f="combo" onclick="filterSpecials('combo',this)">🤝 Combo</span>
+        </div>
+      </div>
+      <div class="specials-grid" id="specials-grid"></div>
+      <div class="empty-state" id="empty-specials" style="display:none;">
+        <div class="ei">✨</div>
+        <p>No specials posted yet.<br>Head over to <strong style="color:var(--gold);">Post a Special</strong> to publish your first one.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- DELETE MODAL -->
+<div class="overlay" id="del-overlay">
+  <div class="modal">
+    <h3>Remove Special?</h3>
+    <div class="gold-line"></div>
+    <p>This will permanently delete the special from the live page. You cannot undo this action.</p>
+    <div class="modal-btns">
+      <button class="btn-danger" id="confirm-del-btn">Delete</button>
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  let specials = JSON.parse(localStorage.getItem('fatChefSpecials') || '[]');
+  let selectedType = '';
+  let selectedBadge = 'gold';
+  let uploadedImageData = '';
+  let deleteIdx = null;
+  let editIdx = null;
+
+  function save() { localStorage.setItem('fatChefSpecials', JSON.stringify(specials)); updateLiveCount(); }
+
+  function toast(msg, dur = 3200) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), dur);
+  }
+
+  function updateLiveCount() {
+    const live = specials.filter(s => !s.draft).length;
+    document.getElementById('live-count').textContent = `${live} live · ${specials.length} total`;
+  }
+
+  function showPanel(id, el) {
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById('panel-' + id).classList.add('active');
+    if (el) el.classList.add('active');
+    if (id === 'manage') renderManage();
+    updateLiveCount();
+  }
+
+  function selectType(el) {
+    document.querySelectorAll('.type-card').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedType = el.dataset.type;
+    updatePreview();
+  }
+
+  function selectBadge(el) {
+    document.querySelectorAll('.badge-opt').forEach(b => b.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedBadge = el.dataset.badge;
+    updatePreview();
+  }
+
+  function handleFileUpload(input) {
+    const file = input.files[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) { toast('⚠️ Image too large. Max 5MB.'); return; }
+    const reader = new FileReader();
+    reader.onload = e => {
+      uploadedImageData = e.target.result;
+      document.getElementById('s-image').value = '';
+      updatePreview();
+    };
+    reader.readAsDataURL(file);
+  }
+
+  // Drag & drop
+  const ua = document.getElementById('upload-area');
+  ua.addEventListener('dragover', e => { e.preventDefault(); ua.classList.add('drag'); });
+  ua.addEventListener('dragleave', () => ua.classList.remove('drag'));
+  ua.addEventListener('drop', e => {
+    e.preventDefault(); ua.classList.remove('drag');
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith('image/')) {
+      const reader = new FileReader();
+      reader.onload = ev => { uploadedImageData = ev.target.result; document.getElementById('s-image').value = ''; updatePreview(); };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  function getImageSrc() {
+    return uploadedImageData || document.getElementById('s-image').value.trim();
+  }
+
+  function updatePreview() {
+    const name = document.getElementById('s-name').value || 'Dish name will appear here';
+    const desc = document.getElementById('s-desc').value || 'Your description will appear here…';
+    const price = document.getElementById('s-price').value;
+    const oldprice = document.getElementById('s-oldprice').value;
+    const expires = document.getElementById('s-expires').value;
+    const imgSrc = getImageSrc();
+
+    document.getElementById('prev-title').textContent = name;
+    document.getElementById('prev-desc').textContent = desc;
+
+    // Image
+    const img = document.getElementById('prev-img');
+    const ph = document.getElementById('prev-img-ph');
+    if (imgSrc) { img.src = imgSrc; img.style.display = 'block'; ph.style.display = 'none'; }
+    else { img.style.display = 'none'; ph.style.display = 'flex'; }
+
+    // Price
+    const pp = document.getElementById('prev-price');
+    const pop = document.getElementById('prev-oldprice');
+    const pdt = document.getElementById('prev-discount');
+    pp.textContent = price ? 'K ' + price : '';
+    if (oldprice && price) {
+      pop.textContent = 'K ' + oldprice; pop.style.display = 'inline';
+      const pct = Math.round((1 - price/oldprice)*100);
+      pdt.textContent = pct + '% OFF'; pdt.style.display = 'inline';
+    } else { pop.style.display = 'none'; pdt.style.display = 'none'; }
+
+    // Expires
+    const pe = document.getElementById('prev-expires');
+    if (expires) {
+      pe.style.display = 'flex';
+      document.getElementById('prev-expires-text').textContent = 'Valid until ' + new Date(expires).toLocaleDateString('en-GB', {day:'numeric',month:'long',year:'numeric'});
+    } else { pe.style.display = 'none'; }
+
+    // Badge
+    const badge = document.getElementById('prev-badge');
+    badge.className = 's-badge ' + selectedBadge;
+    const labels = { special:'Special', discount:'Offer', new:'New', drink:'Drinks', event:'Event', combo:'Deal' };
+    badge.textContent = labels[selectedType] || 'Special';
+
+    // Type
+    const typeLabels = { special:"Chef's Special", discount:'Discount Offer', new:'New Dish', drink:'Drink Special', event:'Event', combo:'Combo Deal' };
+    document.getElementById('prev-type').textContent = (typeLabels[selectedType] || '') + (document.getElementById('s-category').value ? ' · ' + document.getElementById('s-category').value : '');
+  }
+
+  function publishSpecial(asDraft) {
+    const name = document.getElementById('s-name').value.trim();
+    const desc = document.getElementById('s-desc').value.trim();
+    if (!name || !desc) { toast('⚠️ Title and description are required.'); return; }
+
+    const obj = {
+      type: selectedType || 'special',
+      name, desc,
+      category: document.getElementById('s-category').value,
+      price: document.getElementById('s-price').value,
+      oldprice: document.getElementById('s-oldprice').value,
+      expires: document.getElementById('s-expires').value,
+      badge: selectedBadge,
+      image: getImageSrc(),
+      draft: asDraft,
+      created: new Date().toISOString()
+    };
+
+    if (editIdx !== null) {
+      specials[editIdx] = obj;
+      editIdx = null;
+    } else {
+      specials.unshift(obj);
+    }
+    save();
+    toast(asDraft ? `📝 "${name}" saved as draft.` : `🚀 "${name}" is now live!`);
+    clearForm();
+    updateLiveCount();
+  }
+
+  function clearForm() {
+    ['s-name','s-category','s-price','s-oldprice','s-expires','s-image','s-desc'].forEach(id => document.getElementById(id).value = '');
+    uploadedImageData = '';
+    editIdx = null;
+    document.querySelectorAll('.type-card').forEach(c => c.classList.remove('selected'));
+    document.querySelectorAll('.badge-opt').forEach(b => b.classList.remove('selected'));
+    document.querySelector('.badge-opt.gold').classList.add('selected');
+    selectedType = ''; selectedBadge = 'gold';
+    document.getElementById('file-input').value = '';
+    updatePreview();
+  }
+
+  function renderManage(filter = 'all') {
+    const grid = document.getElementById('specials-grid');
+    const empty = document.getElementById('empty-specials');
+    const list = filter === 'all' ? specials : specials.filter(s => s.type === filter);
+    document.getElementById('manage-count').textContent = `${list.length} item${list.length !== 1 ? 's' : ''} ${filter !== 'all' ? 'in this category' : 'total'}`;
+    if (!list.length) { grid.innerHTML = ''; empty.style.display = 'block'; return; }
+    empty.style.display = 'none';
+    const fallback = 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&q=70';
+    const typeIcons = { special:'⭐', discount:'🏷️', new:'🆕', drink:'🍹', event:'🎉', combo:'🤝' };
+    const typeLabels = { special:"Chef's Special", discount:'Discount', new:'New Dish', drink:'Drink Special', event:'Event', combo:'Combo' };
+    grid.innerHTML = list.map((s, i) => {
+      const realIdx = specials.indexOf(s);
+      const pct = s.oldprice && s.price ? Math.round((1 - s.price/s.oldprice)*100) : 0;
+      const expiresEl = s.expires ? `<div class="sc-expires"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>Until ${new Date(s.expires).toLocaleDateString('en-GB',{day:'numeric',month:'short'})}</div>` : '';
+      return `
+      <div class="special-card">
+        <div class="special-card-img">
+          ${s.image ? `<img src="${s.image}" onerror="this.style.display='none'" alt="${s.name}">` : `<div class="special-card-img-ph">${typeIcons[s.type]||'🍽️'}</div>`}
+          <div class="s-badge ${s.badge||'gold'}">${typeLabels[s.type]||'Special'}</div>
+          <div class="card-status"><span class="status-dot ${s.draft?'draft':'live'}"></span>${s.draft?'Draft':'Live'}</div>
+        </div>
+        <div class="special-card-body">
+          <div class="sc-type">${typeIcons[s.type]||''} ${typeLabels[s.type]||'Special'} ${s.category ? '· '+s.category : ''}</div>
+          <div class="sc-name">${s.name}</div>
+          <div class="sc-desc">${s.desc}</div>
+          <div class="sc-prices">
+            ${s.price ? `<span class="sc-price">K ${s.price}</span>` : ''}
+            ${s.oldprice ? `<span class="sc-old">K ${s.oldprice}</span>` : ''}
+            ${pct > 0 ? `<span class="sc-discount">${pct}% OFF</span>` : ''}
+          </div>
+          ${expiresEl}
+          <div class="sc-card-actions">
+            <button class="sc-btn edit" onclick="editSpecial(${realIdx})">✎ Edit</button>
+            <button class="sc-btn toggle" onclick="toggleDraft(${realIdx})">${s.draft?'▶ Publish':'⏸ Draft'}</button>
+            <button class="sc-btn del" onclick="confirmDel(${realIdx})">✕ Delete</button>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  let currentFilter = 'all';
+  function filterSpecials(f, el) {
+    currentFilter = f;
+    document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    renderManage(f);
+  }
+
+  function editSpecial(idx) {
+    const s = specials[idx];
+    editIdx = idx;
+    document.getElementById('s-name').value = s.name;
+    document.getElementById('s-category').value = s.category || '';
+    document.getElementById('s-price').value = s.price || '';
+    document.getElementById('s-oldprice').value = s.oldprice || '';
+    document.getElementById('s-expires').value = s.expires || '';
+    document.getElementById('s-image').value = (s.image && !s.image.startsWith('data:')) ? s.image : '';
+    if (s.image && s.image.startsWith('data:')) uploadedImageData = s.image;
+    document.getElementById('s-desc').value = s.desc;
+    selectedType = s.type;
+    selectedBadge = s.badge || 'gold';
+    document.querySelectorAll('.type-card').forEach(c => { c.classList.toggle('selected', c.dataset.type === s.type); });
+    document.querySelectorAll('.badge-opt').forEach(b => { b.classList.toggle('selected', b.dataset.badge === selectedBadge); });
+    showPanel('post', document.querySelector('.nav-item'));
+    document.querySelectorAll('.nav-item')[0].classList.add('active');
+    updatePreview();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    toast('✎ Editing — make changes and re-publish.');
+  }
+
+  function toggleDraft(idx) {
+    specials[idx].draft = !specials[idx].draft;
+    save();
+    renderManage(currentFilter);
+    toast(specials[idx].draft ? '⏸ Moved to drafts.' : '✓ Published live.');
+  }
+
+  function confirmDel(idx) {
+    deleteIdx = idx;
+    document.getElementById('del-overlay').classList.add('open');
+  }
+  function closeModal() { document.getElementById('del-overlay').classList.remove('open'); deleteIdx = null; }
+  document.getElementById('del-overlay').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
+  document.getElementById('confirm-del-btn').addEventListener('click', () => {
+    if (deleteIdx !== null) {
+      const name = specials[deleteIdx].name;
+      specials.splice(deleteIdx, 1);
+      save(); renderManage(currentFilter);
+      toast(`"${name}" deleted.`); closeModal();
+    }
+  });
+
+  updateLiveCount();
+  updatePreview();
+</script>
+</body>
+</html>
